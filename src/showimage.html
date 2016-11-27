@@ -1,0 +1,191 @@
+<!--
+ * Copyright (c) 2009 The Chromium Authors. All rights reserved.  Use of this
+ * source code is governed by a BSD-style license that can be found in the
+ * LICENSE file.
+-->
+<html>
+<head>
+<title>Screen Capture</title>
+<meta charset="UTF-8">
+<link href="showimage.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+  <div id="header">
+  <div id="toolbar" class="toolbar">
+   <ul>
+    <li id="btnHighlight" class="mark">
+    <div class="colorBox" id="highlightColorBox"></div>
+    <span id="tHighlight">Highlight</span>
+        <div class="tool" id="highlightTool">
+        <div id="highlightColorPad"></div>
+        <div class="clear"></div>
+        <div class="tool-option" style="border-top: 1px solid #ccc; padding-top:2px; margin-top:5px;">
+          <div id="borderMode"><span id="border"></span></div>
+          <div id="rectMode"><span id="rect"></span></div>
+        </div>
+        <div class="tool-option-line">
+          <div id="rectangle" class="mark"><span class="rect"></span></div>
+          <div id="radiusRectangle"><span class="radiusRect"></span></div>
+          <div id="ellipse"><span class="ellipse"></span></div>
+        </div>
+      </div>
+    </li>
+    <li id="btnBlackout">
+      <div class="blurBox" id="blackoutBox"></div>
+      <span id="tRedact">Redact</span>
+      <div class="tool tool-option">
+        <div id="redact" class="mark"><span id="redactText"></span></div>
+        <div id="blur" ><span id="blurText"></span></div>
+      </div>
+    </li>
+    <li id="btnText">
+    <div class="colorBox" id="fontColorBox"></div>
+    <span id="tText">Text</span>
+    <div class="tool" id="fontTool">
+      <div id="fontColorPad"></div>
+      <div class="clear"></div>
+      <div class="tool-option" style="border-top: 1px solid #ccc; padding:2px 0 0 0; margin-top:5px">
+       <div id="size_10" style="font-size: 10px"></div>
+       <div id="size_16" style="font-size: 16px"></div>
+       <div id="size_18" style="font-size: 18px"></div>
+       <div id="size_32" class="mark" style="font-size: 32px"></div>
+     </div>
+    </div>
+    </li>
+    <li id="btnLine">
+      <canvas id="lineIconCav" width="14" height="14" ></canvas>
+      <span id="lineText"></span>
+      <div class="tool">
+       <div id="lineColorPad"></div>
+       <div class="clear"></div>
+       <div class="tool-option-line">
+         <div id="straightLine"><img src="images/line.png" alt=""> </div>
+         <div id="arrow"><img src="images/arrow.png" alt=""> </div>
+       </div>
+      </div>
+    </li>
+  </ul>
+  </div>
+  <div id="tip"></div>
+  <div class="toolbar" id="okBtn" style="position:fixed; right:30px; top:0px;">
+    <ul>
+      <li id="btnSave">
+        <img src="images/icon_save.png" alt="">
+        <span id="tSave"></span>
+      </li>
+      <li id="btnClose">
+        <img src="images/icon_close.png" alt="">
+        <span id="tClose">Close</span>
+      </li>
+    </ul>
+  </div>
+  <div class="clear"></div>
+  </div>
+  <div id="showBox">
+  <div id="photo">
+  <canvas id="canvas"></canvas>
+  <canvas id="mask-canvas"></canvas>
+  <div class="layer" id="layer0"></div>
+  </div>
+  </div>
+  <div id='selectuploadposition'>
+    <div class="selectcontent" >
+    <div id="selectPrompt" style="padding:30px 0 0 30px; "></div>
+      <div style="padding: 5px 0 0 30px;">
+      <div style="padding: 5px 5px;"><input  id="selectSina" type= "radio"><span id="sina"></span></div>
+      <div style="padding: 5px 5px;"><input id="selectFacebook" type= "radio"><span id="facebook"></span></div>
+      </div>
+    </div>
+    <div style="float: right; margin: 5px 15px 0 0;"><button id="uploadFile"></button><button id="cancelUpload"></button></div>
+  </div>
+  <img id="pic" src="#" style="display:none" />
+  <div id="uploadWrapper" style="display: none;">
+    <div id="uploadHeader">
+      <div style="height: 31px; padding-left: 12px; border: 1px solid white; border-top-left-radius: 3px; border-top-right-radius: 3px;">
+        <span class="verticalAlignMiddle"></span>
+      </div>
+    </div>
+    <div id="uploadBody">
+      <div id="uploadSitesWrapper" class="verticalAlignMiddle">
+        <span class="btn" id="picasaBtn">
+          <span class="uploadSite">
+            <img src="images/picasa_icon.png" alt="picasa">
+            <span id="shareToPicasaText"></span>
+          </span>
+        </span>
+        <span class="btn" id="facebookBtn">
+          <span class="uploadSite">
+            <img src="images/facebook_icon.png" alt="facebook">
+            <span id="shareToFacebookText"></span>
+          </span>
+        </span>
+        <span class="btn" id="sinaMicroblogBtn">
+          <span class="uploadSite">
+            <img src="images/sina_icon.png" alt="sina">
+            <span id="shareToSinaMicroblogText"></span>
+          </span>
+        </span>
+        <span class="btn" id="imgurBtn">
+          <span class="uploadSite">
+            <img src="images/imgur_icon.png" alt="imgur">
+            <span id="shareToImgurText"></span>
+          </span>
+        </span>
+      </div>
+      <div id="uploadContentWrapper" style="display:none;">
+        <div id="errorWrapper">
+          <div id="errorInfo"></div>
+        </div>
+        <div id="captionWrapper" style="font-size: 14px; padding-top: 28px;">
+          <label id="imageCaptionText" for="imageCaption"></label>
+          <input type="text" maxLength="140" id="imageCaption" autofocus="true">
+          <span id="requiredFlag">*</span>
+        </div>
+        <div id="uploadAccountWrapper" style="min-height: 60px;">
+          <ul id="uploadAccountList"></ul>
+          <div id="shareToOtherAccount"></div>
+          <span id="authenticationProgress" class="progressBar"></span>
+          <div id="accountItemTemplate" style="display: none;">
+            <li id="${accountId}" class="accountItem">
+              <span style="display: inline-block;">
+                <span class="account">
+                  <span id="accountName" class="accountName" title="${accountName}" data-site="${site}" data-user-id="${userId}">${accountName}</span>
+                  <img id="deleteBtn" class="deleteBtn" src="images/delete_account_icon.png" alt="Delete" title="${deletionTitle}" data-account-id="${accountId}">
+                </span>
+              </span>
+              <span class="progressBar" style="display: none;" title="${progressInfo}"></span>
+              <span class="uploadInfo" style="display: none;"></span>
+              <span style="float: right; margin-right: 35px; font-weight: normal;">
+                <a class="photoLink" target="_blank" href="#">${photoLinkText}</a>
+              </span>
+            </li>
+          </div>
+        </div>
+        <div id="photoSizeTip" style="color: #a4a4a4; font-weight: normal; margin-bottom: 15px;"></div>
+      </div>
+    </div>
+    <div id="uploadFooter">
+      <span style="display: inline-block; height: inherit;">
+        <span class="verticalAlignMiddle">
+          <button id="lastStep" style="display: none;"></button>
+          <button id="closeUploadWrapper"></button>
+        </span>
+      </span>
+    </div>
+  </div>
+  <div id="overlay"></div>
+  <script src="lib/FileSaver.min.js"></script>
+  <script src="js/editor.js"></script>
+  <script src="js/sha1.js"></script>
+  <script src="js/oauth.js"></script>
+  <script src="js/ajax.js"></script>
+  <script src="js/account.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/upload_ui.js"></script>
+  <script src="js/facebook.js"></script>
+  <script src="js/sina_microblog.js"></script>
+  <script src="js/picasa.js"></script>
+  <script src="js/imgur.js"></script>
+  <script src="js/showimage.js"></script>
+</body>
+</html>

@@ -1,0 +1,249 @@
+<!--
+ * Copyright (c) 2009 The Chromium Authors. All rights reserved.  Use of this
+ * source code is governed by a BSD-style license that can be found in the
+ * LICENSE file.
+-->
+<html>
+ <head>
+  <title> Screen Capture Options </title>
+  <meta charset="utf-8">
+  <style>
+  body {
+    font-family: arial, sans-serif;
+    margin:10px;
+    background: #EBEFF9;
+    font-size: 13px;
+  }
+  #header {
+    padding-bottom:1em;
+    padding-top:1em;
+  }
+  #header h1 {
+    font-size: 30px;
+    display: inline;
+    color: #3d5d6a;
+    padding-bottom: 40px;
+    padding-left: 90px;
+    padding-top: 70px;
+    background: url(images/icon_48.png) no-repeat;
+    background-position: 1px 62px;
+  }
+  h4 {
+    padding-left: 0.5em;
+    border-bottom: 2px dotted #c3c3c3;
+    color: #333333;
+    line-height: 28px;
+    font-size: 15px;
+  }
+  p {
+    padding-left: 2em;
+    font-family: verdana, arial, sans-serif, simsun;
+    font-size: 14px;
+  }
+  input {
+    cursor: pointer;
+  }
+  .section-header {
+    background: #ebeff9;
+    border-top: 1px solid #b5c7de;
+    font-size: 99%;
+    padding: 3px 0 2px 5px;
+    font-weight: bold;
+    margin-bottom: 1em;
+    margin-top: 1em;
+  }
+  .contentBox {
+    background-color: #ffffff;
+    border: 3px solid #bec9ce;
+    border-bottom-left-radius: 20px 20px;
+    border-bottom-right-radius: 20px 20px;
+    border-top-left-radius: 20px 20px;
+    border-top-right-radius: 20px 20px;
+    padding: 30px;
+    text-align: left;
+    margin: 50px auto 20px auto;
+    height: auto;
+    width: 600px;
+  }
+  .section-content {
+    padding-left: 80px;
+    line-height: 25px;
+  }
+  .colorBox {
+    width: 60px;
+    height: 20px;
+    margin: 3px 0 0 2px;
+  }
+  #colorpad {
+    position: absolute;
+    word-wrap: break-word;
+    word-break: normal;
+    z-index: 10;
+    border: #000000 solid 1px;
+    background-color: #ffffff;
+    padding: 5px;
+    width: 393px;
+  }
+  #colorpad a {
+    margin: 2px;
+    padding: 1px;
+    display: block;
+    height: 20px;
+    width: 20px;
+    float: left;
+    border: 1px solid #333333;
+  }
+  .contentLeft {
+    float: left;
+    width: 100px;
+    line-height: 28px;
+  }
+  .contentRight {
+    float: left;
+  }
+  .clear {
+    clear: both;
+  }
+  .section-content {
+    padding-left: 55px;
+  }
+  .closeBtn {
+    margin: 20px 0 0 0;
+  }
+  #footer {
+    text-align: center;
+    font-size: 13px;
+  }
+  #filePath {
+    background:#ebebe4;
+    border: 1px solid #7f9db9;
+    color:#aca799;
+    line-height: 18px;
+  }
+  #hot-key-setting {
+    margin: 26px 0 0 80px;
+  }
+  .hot-key {
+    display: inline-block;
+    width: 200px;
+    margin: 0 30px 5px 0;
+  }
+  #hot-key-setting .capture-text {
+    margin-right: 10px;
+  }
+  #error-info {
+    margin: 5px 0 5px 80px;
+    color: red;
+  }
+  #screen-capture-hot-key-set-wrapper {
+    display: none;
+  }
+  </style>
+ </head>
+<body>
+  <div class="contentBox">
+    <div id="header">
+     <h1 id="optionTitle"></h1>
+    </div>
+    <h4 id="screenshootQualitySetting"></h4>
+    <div class="section-content">
+     <div>
+       <label></label><input id="lossy" type="radio" name="quality"><span id="lossyScreenShot"></span></label>
+       &nbsp; <label></label><input id="lossless" type="radio" name="quality"><span id="losslessScreenShot">
+       </span></label> </div>
+     <div class="clear"></div>
+    </div>
+    <div id="shortcutSettingDiv" style="margin: 0px 0px 5px 0px">
+      <h4 id="shorcutSetting"></h4>
+      <div style="margin: 2px 0px 0px 56px">
+         <input type="checkbox" id="settingShortcut">
+         <label for="settingShortcut" id="settingShortcutText"></label>
+      </div>
+      <div id="hot-key-setting">
+        <span class="hot-key">
+          <label for="area-capture-hot-key" class="capture-text" id="area-capture-text"></label>
+          <span>Ctrl+Alt+<select id="area-capture-hot-key"></select></span>
+        </span>
+        <span class="hot-key">
+          <label for="viewport-capture-hot-key" class="capture-text" id="viewport-capture-text"></label>
+          <span>Ctrl+Alt+<select id="viewport-capture-hot-key"></select></span>
+        </span>
+        <span class="hot-key">
+          <label for="full-page-capture-hot-key" class="capture-text" id="full-page-capture-text"></label>
+          <span>Ctrl+Alt+<select id="full-page-capture-hot-key"></select></span>
+        </span>
+      </div>
+      <div id="error-info"></div>
+    </div>
+    <div class="closeBtn"><button id="saveAndClose"></button>
+    </div>
+    <div style="margin-top: 20px; border-bottom: 2px dotted grey;">
+    </div>
+    <details style="margin-top: 20px;">
+      <summary style="cursor: pointer;"><span style="font-weight: bold;">License and credits</span></summary>
+      <h4>License</h4>
+      <pre style="white-space: pre-line;">
+The MIT License (MIT)
+Copyright © 2016 Adrià Vilanova Martínez
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the “Software”), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+      </pre>
+      <div style="margin-top: 20px; border-bottom: 2px dotted grey;">
+      </div>
+      <p style="font-family: arial; font-size: 13px; padding-left: 0;">This release of "Screen Capture" is made possible by the following Open Source software:</p>
+      <h4>Screen Capture (by Google) (<a href="https://code.google.com/archive/p/chrome-screen-capture/">homepage</a>)</h4>
+      <pre style="white-space: pre-line;">
+Copyright (c) 2010, Google
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+      </pre>
+
+      <h4>FileSaver.js (<a href="https://github.com/eligrey/FileSaver.js">homepage</a>)</h4>
+      <pre style="white-space: pre-line;">
+The MIT License
+
+Copyright © 2016 Eli Grey.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+      </pre>
+
+      <h4>JavaScriptDateFormat (<a href="https://github.com/JDMcKinstry/JavaScriptDateFormat/">homepage</a>)</h4>
+      <pre style="white-space: pre-line;">
+Unknown license. Permission granted at: http://stackoverflow.com/a/9229385/1121392.
+      </pre>
+    </details>
+  </div>
+  <script src="js/hotkey_storage.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/options.js"></script>
+</body>
+</html>
