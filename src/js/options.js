@@ -28,9 +28,11 @@ function init() {
 }
 
 function save() {
-  localStorage.screenshootQuality =
+  chrome.storage.local.set({
+    'screenshootQuality': 
       $('lossy').checked ? 'jpeg' : '' ||
-      $('lossless').checked ? 'png' : '';
+      $('lossless').checked ? 'png' : '',
+  });
 
   return true;
 }
@@ -43,8 +45,10 @@ function saveAndClose() {
 }
 
 function initScreenCaptureQuality() {
-  $('lossy').checked = localStorage.screenshootQuality == 'jpeg';
-  $('lossless').checked = localStorage.screenshootQuality == 'png';
+  chrome.storage.local.get('screenshotQuality', value => {
+    $('lossy').checked = value == 'jpeg';
+    $('lossless').checked = value == 'png';
+  });
 }
 
 function i18nReplace(id, name) {

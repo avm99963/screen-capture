@@ -504,13 +504,15 @@ var photoshop = {
 
   save: function() {
     photoshop.draw();
-    var formatParam  = localStorage.screenshootQuality || 'png';
-    var dataUrl;
-    var isJpeg = formatParam == 'jpeg';
-    $('canvas').toBlob(function(blob) {
-      saveAs(blob, chrome.extension.getBackgroundPage().screenshot.screenshotName+".png");
-    }, 'image/' + (isJpeg ? 'jpeg' : 'png'), (isJpeg ? 0.5 : null));
-    photoshop.finish();
+    chrome.storage.local.get('screenshotQuality', formatParam => {
+      var formatParam = formatParam || 'png';
+      var dataUrl;
+      var isJpeg = formatParam == 'jpeg';
+      $('canvas').toBlob(function(blob) {
+        saveAs(blob, chrome.extension.getBackgroundPage().screenshot.screenshotName+".png");
+      }, 'image/' + (isJpeg ? 'jpeg' : 'png'), (isJpeg ? 0.5 : null));
+      photoshop.finish();
+    });
   },
 
   drawLineOnMaskCanvas: function(startX, startY, endX, endY, type, layerId) {

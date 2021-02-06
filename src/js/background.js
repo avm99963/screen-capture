@@ -270,23 +270,8 @@ var screenshot = {
     return navigator.userAgent.toLowerCase().indexOf(operationSystem) > -1;
   },
 
-  executeScriptsInExistingTabs: function() {
-    chrome.windows.getAll(null, function(wins) {
-      for (var j = 0; j < wins.length; ++j) {
-        chrome.tabs.getAllInWindow(wins[j].id, function(tabs) {
-          for (var i = 0; i < tabs.length; ++i) {
-            if (tabs[i].url.indexOf("chrome://") != 0) {
-              chrome.tabs.executeScript(tabs[i].id, { file: 'js/page.js' });
-            }
-          }
-        });
-      }
-    });
-  },
-
   init: function() {
     localStorage.screenshootQuality = localStorage.screenshootQuality || 'png';
-    screenshot.executeScriptsInExistingTabs();
     screenshot.addMessageListener();
   }
 };

@@ -847,10 +847,11 @@ var page = {
   /**
   * Remove an element
   */
-  init: function() { 
+  init: function() {
     if (document.body.hasAttribute('screen_capture_injected')) {
       return;
     }
+    document.body.setAttribute('screen_capture_injected', true);
     if (isPageCapturable()) {
       chrome.extension.sendMessage({msg: 'page_capturable'});
     } else {

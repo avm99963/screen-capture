@@ -72,80 +72,98 @@ function init() {
   document.body.style.minWidth = "140px";
 
   var isScriptLoad = false;
-  chrome.tabs.getSelected(null, function(tab) {
+  chrome.tabs.query({
+    active: true,
+  }, function(tabs) {
+    if (tabs.length < 1) {
+      console.error('Expected 1 tab');
+      return;
+    }
+    var tab = tabs[0];
     if (tab.url.indexOf('chrome') == 0 || tab.url.indexOf('about') == 0) {
       i18nReplace('tip', 'special');
       return;
-    } else {
-      $('tip').style.display = 'none';
-      $('captureSpecialPageItem').style.display = 'block';
-      showOption();
     }
-    chrome.tabs.sendMessage(tab.id, {msg: 'is_page_capturable'},
-      function(response) {
-        isScriptLoad = true;
-        if (response.msg == 'capturable') {
-          $('tip').style.display = 'none';
-          $('captureSpecialPageItem').style.display = 'none';
-          $('captureWindowItem').style.display = 'block';
-          $('captureAreaItem').style.display = 'block';
-          $('captureWebpageItem').style.display = 'block';
-          var textWidth = $('captureWindowText')['scrollWidth'];
-          resizeDivWidth('captureWindowText', textWidth);
-          resizeDivWidth('captureAreaText', textWidth);
-          resizeDivWidth('captureWebpageText', textWidth);
-          var bg = chrome.extension.getBackgroundPage();
-          if (bg.screenshot.isThisPlatform('mac')) {
-            $('captureAreaShortcut').innerText = '\u2325\u2318R';
-            $('captureWindowShortcut').innerText = '\u2325\u2318V';
-            $('captureWebpageShortcut').innerText = '\u2325\u2318H';
-          }
-        } else if (response.msg == 'uncapturable') {
-          i18nReplace('tip', 'special');
-          $('tip').style.display = 'block';
-        } else {
-          i18nReplace('tip', 'loading');
-        }
-      });
-  });
-  chrome.tabs.executeScript(null, {file: 'js/isLoad.js'});
-  var insertScript = function() {
-    if (isScriptLoad == false) {
-      chrome.tabs.getSelected(null, function(tab) {
-        if (tab.url.indexOf('chrome') == 0 ||
-            tab.url.indexOf('about') == 0) {
-          i18nReplace('tip', 'special');
-        } else {
-          $('tip').style.display = 'none';
-          $('captureSpecialPageItem').style.display = 'block';
-          showOption();
-        }
-      });
-    }
-    var captureItems = document.querySelectorAll('li.menuI');
-    var showSeparator = false;
-    for (var i = 0; i < captureItems.length; i++) {
-      if (window.getComputedStyle(captureItems[i]).display != 'none') {
-        showSeparator = true;
-        break;
-      }
-    }
-    $('separatorItem').style.display = showSeparator ? 'block' : 'none';
-  }
-  setTimeout(insertScript, 500);
+    chrome.tabs.executeScript({ file: 'js/page.js' }, _ => {
+      chrome.tabs.executeScript(null, {file: 'js/isLoad.js'}, _ => {
+        $('tip').style.display = 'none';
+        $('captureSpecialPageItem').style.display = 'block';
+        showOption();
 
-  // Update hot key.
-  $('captureSpecialPageItem').addEventListener('click', function(e) {
-    toDo('capture_special_page');
-  });
-  $('captureAreaItem').addEventListener('click', function(e) {
-    toDo('capture_area');
-  });
-  $('captureWindowItem').addEventListener('click', function(e) {
-    toDo('capture_window');
-  });
-  $('captureWebpageItem').addEventListener('click', function(e) {
-    toDo('capture_webpage');
+        chrome.tabs.sendMessage(tab.id, {msg: 'is_page_capturable'},
+          response => {
+            isScriptLoad = true;
+            if (response.msg == 'capturable') {
+              $('tip').style.display = 'none';
+              $('captureSpecialPageItem').style.display = 'none';
+              $('captureWindowItem').style.display = 'block';
+              $('captureAreaItem').style.display = 'block';
+              $('captureWebpageItem').style.display = 'block';
+              var textWidth = $('captureWindowText')['scrollWidth'];
+              resizeDivWidth('captureWindowText', textWidth);
+              resizeDivWidth('captureAreaText', textWidth);
+              resizeDivWidth('captureWebpageText', textWidth);
+              var bg = chrome.extension.getBackgroundPage();
+              if (bg.screenshot.isThisPlatform('mac')) {
+                $('captureAreaShortcut').innerText = '\u2325\u2318R';
+                $('captureWindowShortcut').innerText = '\u2325\u2318V';
+                $('captureWebpageShortcut').innerText = '\u2325\u2318H';
+              }
+            } else if (response.msg == 'uncapturable') {
+              i18nReplace('tip', 'special');
+              $('tip').style.display = 'block';
+            } else {
+              i18nReplace('tip', 'loading');
+            }
+          });
+
+          var insertScript = function() {
+            if (isScriptLoad == false) {
+              chrome.tabs.query({
+                active: true,
+              }, function(tabs) {
+                if (tabs.length < 1) {
+                  console.error('Expected 1 tab.');
+                  return;
+                }
+                var tab = tabs[0];
+                if (tab.url.indexOf('chrome') == 0 ||
+                    tab.url.indexOf('about') == 0) {
+                  i18nReplace('tip', 'special');
+                } else {
+                  $('tip').style.display = 'none';
+                  $('captureSpecialPageItem').style.display = 'block';
+                  showOption();
+                }
+              });
+            }
+            var captureItems = document.querySelectorAll('li.menuI');
+            var showSeparator = false;
+            for (var i = 0; i < captureItems.length; i++) {
+              if (window.getComputedStyle(captureItems[i]).display != 'none') {
+                showSeparator = true;
+                break;
+              }
+            }
+            $('separatorItem').style.display = showSeparator ? 'block' : 'none';
+          }
+          setTimeout(insertScript, 500);
+
+          // Update hot key.
+          $('captureSpecialPageItem').addEventListener('click', function(e) {
+            toDo('capture_special_page');
+          });
+          $('captureAreaItem').addEventListener('click', function(e) {
+            toDo('capture_area');
+          });
+          $('captureWindowItem').addEventListener('click', function(e) {
+            toDo('capture_window');
+          });
+          $('captureWebpageItem').addEventListener('click', function(e) {
+            toDo('capture_webpage');
+          });
+      });
+    });
   });
 }
 
