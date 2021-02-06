@@ -13,7 +13,6 @@ function $(id) {
 function i18nReplace(id, messageKey) {
   return $(id).innerHTML = chrome.i18n.getMessage(messageKey);
 }
-UploadUI.init();
 
 var bg = chrome.extension.getBackgroundPage();
 var canvas = new Canvas();
@@ -503,6 +502,17 @@ var photoshop = {
     }
   },
 
+  save: function() {
+    photoshop.draw();
+    var formatParam  = localStorage.screenshootQuality || 'png';
+    var dataUrl;
+    var isJpeg = formatParam == 'jpeg';
+    $('canvas').toBlob(function(blob) {
+      saveAs(blob, chrome.extension.getBackgroundPage().screenshot.screenshotName+".png");
+    }, 'image/' + (isJpeg ? 'jpeg' : 'png'), (isJpeg ? 0.5 : null));
+    photoshop.finish();
+  },
+
   drawLineOnMaskCanvas: function(startX, startY, endX, endY, type, layerId) {
     var ctx = $('mask-canvas').getContext('2d');
     ctx.clearRect(0, 0, $('mask-canvas').width, $('mask-canvas').height);
@@ -809,16 +819,5 @@ $('canvas').addEventListener(
     'selectstart', function f(e) { return false });
 $('mask-canvas').addEventListener(
     'selectstart', function f(e) { return false });
+$('btnSave').addEventListener('click', photoshop.save);
 $('btnClose').addEventListener('click', photoshop.closeCurrentTab);
-$('uploadAccountList').addEventListener('click', function(e) {
-  var target = e.target;
-  var classList = Array.prototype.slice.call(target.classList)
-  if (classList.indexOf('accountName') >= 0) {
-    var site = target.dataset.site;
-    var userId = target.dataset.userId;
-    UploadUI.upload(site, userId);
-  } else if (classList.indexOf('deleteBtn') >= 0) {
-    var accountId = target.dataset.accountId;
-    UploadUI.deleteAccountItem(accountId);
-  }
-});

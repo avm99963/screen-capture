@@ -20,53 +20,25 @@ var screenshot = {
   captureStatus: true,
   screenshotName: null,
 
-  handleHotKey: function(keyCode) {
-    if (HotKey.isEnabled()) {
-      switch (keyCode) {
-        case HotKey.getCharCode('area'):
-          screenshot.showSelectionArea();
-          break;
-        case HotKey.getCharCode('viewport'):
-          screenshot.captureWindow();
-          break;
-        case HotKey.getCharCode('fullpage'):
-          screenshot.captureWebpage();
-          break;
-        case HotKey.getCharCode('screen'):
-          screenshot.captureScreen();
-          break;
-      }
-    }
-  },
-
   /**
   * Receive messages from content_script, and then decide what to do next
   */
   addMessageListener: function() {
     chrome.extension.onMessage.addListener(function(request, sender, response) {
+      console.log(request);
       var obj = request;
-      var hotKeyEnabled = HotKey.isEnabled();
       switch (obj.msg) {
-        case 'capture_hot_key':
-          screenshot.handleHotKey(obj.keyCode);
-          break;
         case 'capture_selected':
           screenshot.captureSelected();
           break;
         case 'capture_window':
-          if (hotKeyEnabled) {
-            screenshot.captureWindow();
-          }
+          screenshot.captureWindow();
           break;
         case 'capture_area':
-          if (hotKeyEnabled) {
-            screenshot.showSelectionArea();
-          }
+          screenshot.showSelectionArea();
           break;
         case 'capture_webpage':
-          if (hotKeyEnabled) {
-            screenshot.captureWebpage();
-          }
+          screenshot.captureWebpage();
           break;
       }
     });
@@ -305,7 +277,6 @@ var screenshot = {
           for (var i = 0; i < tabs.length; ++i) {
             if (tabs[i].url.indexOf("chrome://") != 0) {
               chrome.tabs.executeScript(tabs[i].id, { file: 'js/page.js' });
-              chrome.tabs.executeScript(tabs[i].id, { file: 'js/shortcut.js' });
             }
           }
         });

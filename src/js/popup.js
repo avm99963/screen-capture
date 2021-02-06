@@ -65,17 +65,12 @@ function init() {
   $('option').addEventListener('click', function () {
     chrome.tabs.create({ url: 'options.html'});
   }, false);
-  if (HotKey.isEnabled()) {
-    $('captureWindowShortcut').style.display = 'inline';
-    $('captureAreaShortcut').style.display = 'inline';
-    $('captureWebpageShortcut').style.display = 'inline';
-    document.body.style.minWidth = "190px"
-  } else {
-    $('captureWindowShortcut').style.display = 'none';
-    $('captureAreaShortcut').style.display = 'none';
-    $('captureWebpageShortcut').style.display = 'none';
-    document.body.style.minWidth = "140px";
-  }
+
+  $('captureWindowShortcut').style.display = 'none';
+  $('captureAreaShortcut').style.display = 'none';
+  $('captureWebpageShortcut').style.display = 'none';
+  document.body.style.minWidth = "140px";
+
   var isScriptLoad = false;
   chrome.tabs.getSelected(null, function(tab) {
     if (tab.url.indexOf('chrome') == 0 || tab.url.indexOf('about') == 0) {
@@ -140,17 +135,6 @@ function init() {
   setTimeout(insertScript, 500);
 
   // Update hot key.
-  if (HotKey.get('area') != '@')
-    $('captureAreaShortcut').innerText = 'Ctrl+Alt+' + HotKey.get('area');
-  if (HotKey.get('viewport') != '@') {
-    $('captureWindowShortcut').innerText = 'Ctrl+Alt+' +
-        HotKey.get('viewport');
-  }
-  if (HotKey.get('fullpage') != '@') {
-    $('captureWebpageShortcut').innerText ='Ctrl+Alt+' +
-        HotKey.get('fullpage');
-  }
-
   $('captureSpecialPageItem').addEventListener('click', function(e) {
     toDo('capture_special_page');
   });

@@ -241,15 +241,7 @@ var page = {
   },
 
   getOriginalViewPortWidth: function() {
-    chrome.extension.sendMessage({ msg: 'original_view_port_width'},
-      function(originalViewPortWidth) {
-        if (originalViewPortWidth) {
-          page.originalViewPortWidth = page.hasScrollBar('y') ?
-            originalViewPortWidth - page.defaultScrollBarWidth : originalViewPortWidth;
-        } else {
-          page.originalViewPortWidth = document.documentElement.clientWidth;
-        }
-      });
+    page.originalViewPortWidth = document.documentElement.clientWidth;
   },
   
   calculateSizeAfterZooming: function(originalSize) {
@@ -895,13 +887,3 @@ window.addEventListener('resize', function() {
   // Reget original width of view port if browser window resized or page zoomed.
   page.getOriginalViewPortWidth();
 }, false);
-
-// Send page url for retriving and parsing access token for facebook and picasa.
-var message = {
-  msg: 'url_for_access_token',
-  url: window.location.href
-}
-if (window.location.href.indexOf('https://api.weibo.com/oauth2/default.html') == 0) {
-  message.siteId = 'sina'
-}
-page.sendMessage(message);
