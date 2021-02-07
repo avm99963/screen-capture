@@ -107,6 +107,9 @@
    "name": {
       "message": "Захват экрана"
    },
+   "name_beta": {
+      "message": "Захват экрана (beta)"
+   },
    "ok": {
       "message": "OK"
    },

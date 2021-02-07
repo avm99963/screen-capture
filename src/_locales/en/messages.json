@@ -1,5 +1,6 @@
 ﻿{
   "name": {"message": "Screen Capture"},
+  "name_beta": {"message": "Screen Capture (beta)"},
   "description": {"message": "Capture visible content of a tab, a region of a web page, or the whole page as a PNG image."},
   "default_title": {"message": "Screen Capture"},
   "capture_screen": {"message": "Capture Screen Region"},

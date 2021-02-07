@@ -87,7 +87,7 @@ fi
 
 if [[ $channel == "beta" ]]; then
   # Change manifest.json to label the release as beta
-  set_manifest_field "name" "__MSG_appBetaName__"
+  set_manifest_field "name" "__MSG_name_beta__"
 fi
 
 # Create ZIP file for upload to the Chrome Web Store

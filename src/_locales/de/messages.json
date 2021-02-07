@@ -53,6 +53,9 @@
    "name": {
       "message": "Bildschirmerfassung"
    },
+   "name_beta": {
+      "message": "Bildschirmerfassung (beta)"
+   },
    "ok": {
       "message": "OK"
    },

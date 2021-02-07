@@ -56,6 +56,9 @@
    "name": {
       "message": "Capture d'\u00e9cran"
    },
+   "name_beta": {
+      "message": "Capture d'\u00e9cran (beta)"
+   },
    "ok": {
       "message": "OK"
    },

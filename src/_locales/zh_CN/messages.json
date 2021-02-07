@@ -1,5 +1,6 @@
 {
   "name": {"message": "网页截图"},
+  "name_beta": {"message": "网页截图 (beta)"},
   "description": {"message": "截取网页为图片，支持窗口截图，区域截图和整个网页截图三种方式。支持水平和垂直翻页截取超大网页，新版引进自动截图保存功能。"},
   "default_title": {"message": "网页截图"},
   "capture_screen": {"message": "屏幕区域截图"},

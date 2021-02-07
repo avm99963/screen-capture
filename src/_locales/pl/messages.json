@@ -56,6 +56,9 @@
    "name": {
       "message": "Screen Capture"
    },
+   "name_beta": {
+      "message": "Screen Capture (beta)"
+   },
    "ok": {
       "message": "OK"
    },
