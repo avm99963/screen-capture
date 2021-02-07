@@ -27,27 +27,28 @@ function init() {
   initScreenCaptureQuality();
 }
 
-function save() {
+function save(callback) {
+  var screenshotQuality = $('lossy').checked ? 'jpeg' : '' ||
+      $('lossless').checked ? 'png' : '';
   chrome.storage.local.set({
-    'screenshootQuality': 
-      $('lossy').checked ? 'jpeg' : '' ||
-      $('lossless').checked ? 'png' : '',
+    screenshotQuality,
+  }, _ => {
+    callback(true);
   });
-
-  return true;
 }
 
 function saveAndClose() {
-  if (save())
+  save(_ => {
     chrome.tabs.getSelected(null, function(tab) {
       chrome.tabs.remove(tab.id);
     });
+  });
 }
 
 function initScreenCaptureQuality() {
   chrome.storage.local.get('screenshotQuality', value => {
-    $('lossy').checked = value == 'jpeg';
-    $('lossless').checked = value == 'png';
+    $('lossy').checked = value['screenshotQuality'] == 'jpeg';
+    $('lossless').checked = value['screenshotQuality'] == 'png';
   });
 }
 

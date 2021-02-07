@@ -504,12 +504,12 @@ var photoshop = {
 
   save: function() {
     photoshop.draw();
-    chrome.storage.local.get('screenshotQuality', formatParam => {
-      var formatParam = formatParam || 'png';
+    chrome.storage.local.get('screenshotQuality', options => {
+      var formatParam = options['screenshotQuality'] || 'png';
       var dataUrl;
       var isJpeg = formatParam == 'jpeg';
       $('canvas').toBlob(function(blob) {
-        saveAs(blob, chrome.extension.getBackgroundPage().screenshot.screenshotName+".png");
+        saveAs(blob, chrome.extension.getBackgroundPage().screenshot.screenshotName + (isJpeg ? ".jpeg" : ".png"));
       }, 'image/' + (isJpeg ? 'jpeg' : 'png'), (isJpeg ? 0.5 : null));
       photoshop.finish();
     });
