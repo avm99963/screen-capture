@@ -91,12 +91,12 @@ var screenshot = {
         screenshot.docWidth = response.docWidth;
         screenshot.docHeight = response.docHeight;
         screenshot.zoom = response.zoom;
-        setTimeout("screenshot.captureAndScroll()", 100);
+        setTimeout("screenshot.captureAndScroll()", screenshot.captureDelayInMs());
         break;
       case 'scroll_next_done':
         screenshot.scrollXCount = response.scrollXCount;
         screenshot.scrollYCount = response.scrollYCount;
-        setTimeout("screenshot.captureAndScroll()", 100);
+        setTimeout("screenshot.captureAndScroll()", screenshot.captureDelayInMs());
         break;
       case 'scroll_finished':
         screenshot.captureAndScrollDone();
@@ -273,7 +273,14 @@ var screenshot = {
   init: function() {
     localStorage.screenshootQuality = localStorage.screenshootQuality || 'png';
     screenshot.addMessageListener();
-  }
+  },
+
+  captureDelayInMs: function() {
+    var maxCallsPerSecond = chrome?.tabs?.MAX_CAPTURE_VISIBLE_TAB_CALLS_PER_SECOND;
+    if (!maxCallsPerSecond) return 100;
+
+    return Math.ceil(1000/maxCallsPerSecond) + 10;
+  },
 };
 
 screenshot.init();
