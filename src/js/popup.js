@@ -74,6 +74,7 @@ function init() {
   var isScriptLoad = false;
   chrome.tabs.query({
     active: true,
+    lastFocusedWindow: true,
   }, function(tabs) {
     if (tabs.length < 1) {
       console.error('Expected 1 tab');
@@ -121,6 +122,7 @@ function init() {
             if (isScriptLoad == false) {
               chrome.tabs.query({
                 active: true,
+                lastFocusedWindow: true,
               }, function(tabs) {
                 if (tabs.length < 1) {
                   console.error('Expected 1 tab.');
