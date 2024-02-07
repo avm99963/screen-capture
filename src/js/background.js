@@ -105,18 +105,19 @@ var screenshot = {
   },
 
   captureSpecialPage: function() {
-    var formatParam = localStorage.screenshootQuality || 'png';
-    chrome.tabs.captureVisibleTab(
-        null, {format: formatParam, quality: 50}, function(data) {
-      var image = new Image();
-      image.onload = function() {
-        screenshot.canvas.width = image.width;
-        screenshot.canvas.height = image.height;
-        var context = screenshot.canvas.getContext("2d");
-        context.drawImage(image, 0, 0);
-        screenshot.postImage();
-      };
-      image.src = data;
+    screenshot.getScreenshotQuality(function(formatParam) {
+      chrome.tabs.captureVisibleTab(
+          null, {format: formatParam, quality: 50}, function(data) {
+        var image = new Image();
+        image.onload = function() {
+          screenshot.canvas.width = image.width;
+          screenshot.canvas.height = image.height;
+          var context = screenshot.canvas.getContext("2d");
+          context.drawImage(image, 0, 0);
+          screenshot.postImage();
+        };
+        image.src = data;
+      });
     });
   },
 
@@ -138,45 +139,47 @@ var screenshot = {
   */
   capturePortion: function(x, y, width, height,
                            visibleWidth, visibleHeight, docWidth, docHeight) {
-    var formatParam = localStorage.screenshootQuality || 'png';
-    chrome.tabs.captureVisibleTab(
-        null, {format: formatParam, quality: 50}, function(data) {
-      var image = new Image();
-      image.onload = function() {
-        var curHeight = image.width < docWidth ?
-            image.height - screenshot.scrollBarY : image.height;
-        var curWidth = image.height < docHeight ?
-            image.width - screenshot.scrollBarX : image.width;
-        var zoomX = curWidth / visibleWidth;
-        var zoomY = curHeight / visibleHeight;
-        screenshot.canvas.width = width * zoomX;
-        screenshot.canvas.height = height * zoomY;
-        var context = screenshot.canvas.getContext("2d");
-        context.drawImage(image, x * zoomX, y * zoomY, width * zoomX,
-            height * zoomY, 0, 0, width * zoomX, height * zoomY);
-        screenshot.postImage();
-      };
-      image.src = data;
+    screenshot.getScreenshotQuality(function(formatParam) {
+      chrome.tabs.captureVisibleTab(
+          null, {format: formatParam, quality: 50}, function(data) {
+        var image = new Image();
+        image.onload = function() {
+          var curHeight = image.width < docWidth ?
+              image.height - screenshot.scrollBarY : image.height;
+          var curWidth = image.height < docHeight ?
+              image.width - screenshot.scrollBarX : image.width;
+          var zoomX = curWidth / visibleWidth;
+          var zoomY = curHeight / visibleHeight;
+          screenshot.canvas.width = width * zoomX;
+          screenshot.canvas.height = height * zoomY;
+          var context = screenshot.canvas.getContext("2d");
+          context.drawImage(image, x * zoomX, y * zoomY, width * zoomX,
+              height * zoomY, 0, 0, width * zoomX, height * zoomY);
+          screenshot.postImage();
+        };
+        image.src = data;
+      });
     });
   },
 
   captureVisible: function(docWidth, docHeight) {
-    var formatParam = localStorage.screenshootQuality || 'png';
-    chrome.tabs.captureVisibleTab(
-        null, {format: formatParam, quality: 50}, function(data) {
-      var image = new Image();
-      image.onload = function() {
-        var width = image.height < docHeight ?
-            image.width - 17 : image.width;
-        var height = image.width < docWidth ?
-            image.height - 17 : image.height;
-        screenshot.canvas.width = width;
-        screenshot.canvas.height = height;
-        var context = screenshot.canvas.getContext("2d");
-        context.drawImage(image, 0, 0, width, height, 0, 0, width, height);
-        screenshot.postImage();
-      };
-      image.src = data;
+    screenshot.getScreenshotQuality(function(formatParam) {
+      chrome.tabs.captureVisibleTab(
+          null, {format: formatParam, quality: 50}, function(data) {
+        var image = new Image();
+        image.onload = function() {
+          var width = image.height < docHeight ?
+              image.width - 17 : image.width;
+          var height = image.width < docWidth ?
+              image.height - 17 : image.height;
+          screenshot.canvas.width = width;
+          screenshot.canvas.height = height;
+          var context = screenshot.canvas.getContext("2d");
+          context.drawImage(image, 0, 0, width, height, 0, 0, width, height);
+          screenshot.postImage();
+        };
+        image.src = data;
+      });
     });
   },
 
@@ -184,66 +187,67 @@ var screenshot = {
   * Use the drawImage method to stitching images, and render to canvas
   */
   captureAndScroll: function() {
-    var formatParam = localStorage.screenshootQuality || 'png';
-    chrome.tabs.captureVisibleTab(
-        null, {format: formatParam, quality: 50}, function(data) {
-      var image = new Image();
-      image.onload = function() {
-        var context = screenshot.canvas.getContext('2d');
-        var width = 0;
-        var height = 0;
+    screenshot.getScreenshotQuality(function(formatParam) {
+      chrome.tabs.captureVisibleTab(
+          null, {format: formatParam, quality: 50}, function(data) {
+        var image = new Image();
+        image.onload = function() {
+          var context = screenshot.canvas.getContext('2d');
+          var width = 0;
+          var height = 0;
 
-        // Get scroll bar's width.
-        screenshot.scrollBarY =
-            screenshot.visibleHeight < screenshot.docHeight ? 17 : 0;
-        screenshot.scrollBarX =
-            screenshot.visibleWidth < screenshot.docWidth ? 17 : 0;
+          // Get scroll bar's width.
+          screenshot.scrollBarY =
+              screenshot.visibleHeight < screenshot.docHeight ? 17 : 0;
+          screenshot.scrollBarX =
+              screenshot.visibleWidth < screenshot.docWidth ? 17 : 0;
 
-        // Get visible width and height of capture result.
-        var visibleWidth =
-            (image.width - screenshot.scrollBarY < screenshot.canvas.width ?
-            image.width - screenshot.scrollBarY : screenshot.canvas.width);
-        var visibleHeight =
-            (image.height - screenshot.scrollBarX < screenshot.canvas.height ?
-            image.height - screenshot.scrollBarX : screenshot.canvas.height);
+          // Get visible width and height of capture result.
+          var visibleWidth =
+              (image.width - screenshot.scrollBarY < screenshot.canvas.width ?
+              image.width - screenshot.scrollBarY : screenshot.canvas.width);
+          var visibleHeight =
+              (image.height - screenshot.scrollBarX < screenshot.canvas.height ?
+              image.height - screenshot.scrollBarX : screenshot.canvas.height);
 
-        // Get region capture start x coordinate.
-        var zoom = screenshot.zoom;
-        var x1 = screenshot.startX - Math.round(screenshot.scrollX * zoom);
-        var x2 = 0;
-        var y1 = screenshot.startY - Math.round(screenshot.scrollY * zoom);
-        var y2 = 0;
+          // Get region capture start x coordinate.
+          var zoom = screenshot.zoom;
+          var x1 = screenshot.startX - Math.round(screenshot.scrollX * zoom);
+          var x2 = 0;
+          var y1 = screenshot.startY - Math.round(screenshot.scrollY * zoom);
+          var y2 = 0;
 
-        if ((screenshot.scrollYCount + 1) * visibleWidth >
-            screenshot.canvas.width) {
-          width = screenshot.canvas.width % visibleWidth;
-          x1 = (screenshot.scrollYCount + 1) * visibleWidth -
-              screenshot.canvas.width + screenshot.startX - screenshot.scrollX;
-        } else {
-          width = visibleWidth;
-        }
-
-        if ((screenshot.scrollXCount + 1) * visibleHeight >
-            screenshot.canvas.height) {
-          height = screenshot.canvas.height % visibleHeight;
-          if ((screenshot.scrollXCount + 1) * visibleHeight +
-              screenshot.scrollY < screenshot.docHeight) {
-            y1 = 0;
+          if ((screenshot.scrollYCount + 1) * visibleWidth >
+              screenshot.canvas.width) {
+            width = screenshot.canvas.width % visibleWidth;
+            x1 = (screenshot.scrollYCount + 1) * visibleWidth -
+                screenshot.canvas.width + screenshot.startX - screenshot.scrollX;
           } else {
-            y1 = (screenshot.scrollXCount + 1) * visibleHeight +
-                screenshot.scrollY - screenshot.docHeight;
+            width = visibleWidth;
           }
 
-        } else {
-          height = visibleHeight;
-        }
-        x2 = screenshot.scrollYCount * visibleWidth;
-        y2 = screenshot.scrollXCount * visibleHeight;
-        context.drawImage(image, x1, y1, width, height, x2, y2, width, height);
-        screenshot.sendMessage({msg: 'scroll_next', visibleWidth: visibleWidth,
-            visibleHeight: visibleHeight}, screenshot.onResponseVisibleSize);
-      };
-      image.src = data;
+          if ((screenshot.scrollXCount + 1) * visibleHeight >
+              screenshot.canvas.height) {
+            height = screenshot.canvas.height % visibleHeight;
+            if ((screenshot.scrollXCount + 1) * visibleHeight +
+                screenshot.scrollY < screenshot.docHeight) {
+              y1 = 0;
+            } else {
+              y1 = (screenshot.scrollXCount + 1) * visibleHeight +
+                  screenshot.scrollY - screenshot.docHeight;
+            }
+
+          } else {
+            height = visibleHeight;
+          }
+          x2 = screenshot.scrollYCount * visibleWidth;
+          y2 = screenshot.scrollXCount * visibleHeight;
+          context.drawImage(image, x1, y1, width, height, x2, y2, width, height);
+          screenshot.sendMessage({msg: 'scroll_next', visibleWidth: visibleWidth,
+              visibleHeight: visibleHeight}, screenshot.onResponseVisibleSize);
+        };
+        image.src = data;
+      });
     });
   },
 
@@ -271,7 +275,14 @@ var screenshot = {
   },
 
   init: function() {
-    localStorage.screenshootQuality = localStorage.screenshootQuality || 'png';
+    chrome.storage.local.get('screenshotQuality', values => {
+      var screenshotQuality = values.screenshotQuality;
+      if (screenshotQuality) return;
+
+      chrome.storage.local.set({
+        screenshotQuality: screenshotQuality || 'png',
+      });
+    });
     screenshot.addMessageListener();
   },
 
@@ -280,6 +291,12 @@ var screenshot = {
     if (!maxCallsPerSecond) return 100;
 
     return Math.ceil(1000/maxCallsPerSecond) + 10;
+  },
+
+  getScreenshotQuality: function(callback) {
+    chrome.storage.local.get('screenshotQuality', function(values) {
+      callback(values.screenshotQuality || 'png');
+    });
   },
 };
 
